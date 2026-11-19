@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>কাদুটি উচ্চ বিদ্যালয় — ৬ষ্ঠ শ্রেণির ফলাফল পোর্টাল</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-bg: rgba(18, 25, 42, 0.85);
+      --surface-light: #ffffff;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --danger: #ef4444;
+      --border: rgba(148, 163, 184, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at top, #132238 0%, var(--bg-dark) 65%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px 14px 48px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .header-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+    }
+
+    .search-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .field select,
+    .field input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.9);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field select:focus,
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 22px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #04101c;
+    }
+
+    .btn-secondary {
+      background: rgba(148, 163, 184, 0.16);
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .btn-print {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      color: #052e16;
+    }
+
+    .hint-text {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .status-msg {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .status-error {
+      display: block;
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fecaca;
+    }
+
+    /* Printable Marksheet */
+    .marksheet-wrapper {
+      display: none;
+      background: var(--surface-light);
+      color: #0f172a;
+      border-radius: 18px;
+      padding: 28px 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      border: 2px solid #0f172a;
+    }
+
+    .marksheet-wrapper.active {
+      display: block;
+    }
+
+    .sheet-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .sheet-school h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .sheet-school p {
+      color: #334155;
+      font-size: 0.95rem;
+    }
+
+    .sheet-tag {
+      text-align: right;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .pass-pill {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .fail-pill {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px 18px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 0.96rem;
+    }
+
+    .info-item strong {
+      color: #0f172a;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-bottom: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.96rem;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .summary-box {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .summary-box span {
+      display: block;
+      font-size: 0.85rem;
+      color: #475569;
+    }
+
+    .summary-box strong {
+      font-size: 1.25rem;
+      color: #0f172a;
+    }
+
+    .sheet-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 28px;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0;
+      }
+      .header-card,
+      .search-card,
+      .sheet-actions,
+      .footer-note {
+        display: none !important;
+      }
+      .marksheet-wrapper {
+        display: block !important;
+        box-shadow: none !important;
+        border: 1px solid #000000 !important;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header-card">
+      <div class="badge">অনলাইন ফলাফল পোর্টাল</div>
+      <h1>কাদুটি উচ্চ বিদ্যালয়</h1>
+      <p class="subtitle">কাদুটি, চান্দিনা, কুমিল্লা • ৬ষ্ঠ শ্রেণির পরীক্ষার ফলাফল (ক, খ ও গ শাখা)</p>
+    </header>
+
+    <section class="search-card">
+      <form id="resultForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="classSelect">শ্রেণি (Class)</label>
+            <select id="classSelect" required>
+              <option value="6" selected>৬ষ্ঠ শ্রেণি (Class 6)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="sectionSelect">শাখা (Section)</label>
+            <select id="sectionSelect" required>
+              <option value="">শাখা নির্বাচন করুন</option>
+              <option value="ক">ক শাখা</option>
+              <option value="খ">খ শাখা</option>
+              <option value="গ">গ শাখা</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="rollInput">রোল নম্বর (Roll)</label>
+            <input type="text" id="rollInput" placeholder="যেমন: 1 বা ০১" required />
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-primary">ফলাফল দেখুন</button>
+            <button type="button" id="resetBtn" class="btn btn-secondary">রিসেট</button>
+          </div>
+          <p class="hint-text">নমুনা দেখতে শাখা **ক / খ / গ** এবং রোল **1** লিখে অনুসন্ধান করুন।</p>
+        </div>
+      </form>
+
+      <div id="statusBox" class="status-msg"></div>
+    </section>
+
+    <article id="marksheetCard" class="marksheet-wrapper" aria-live="polite">
+      <div class="sheet-top">
+        <div class="sheet-school">
+          <h2>কাদুটি উচ্চ বিদ্যালয়</h2>
+          <p>কাদুটি, চান্দিনা, কুমিল্লা • একাডেমিক ফলাফল বিবরণী</p>
+        </div>
+        <div class="sheet-tag">
+          <span id="statusBadge" class="status-pill pass-pill">উত্তীর্ণ (PASSED)</span>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item"><strong>শিক্ষার্থীর নাম:</strong> <span id="stName">-</span></div>
+        <div class="info-item"><strong>শিক্ষার্থী আইডি:</strong> <span id="stId">-</span></div>
+        <div class="info-item"><strong>শ্রেণি:</strong> <span id="stClass">-</span></div>
+        <div class="info-item"><strong>শাখা:</strong> <span id="stSection">-</span></div>
+        <div class="info-item"><strong>রোল নম্বর:</strong> <span id="stRoll">-</span></div>
+        <div class="info-item"><strong>পিতার নাম:</strong> <span id="stFather">-</span></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ক্রমিক</th>
+              <th>বিষয়ের নাম</th>
+              <th>প্রাপ্ত নম্বর</th>
+              <th>গ্রেড পয়েন্ট (GP)</th>
+              <th>লেটার গ্রেড</th>
+            </tr>
+          </thead>
+          <tbody id="marksBody"></tbody>
+        </table>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-box">
+          <span>মোট নম্বর</span>
+          <strong id="sumTotal">0</strong>
+        </div>
+        <div class="summary-box">
+          <span>গড় নম্বর</span>
+          <strong id="sumAvg">0.00</strong>
+        </div>
+        <div class="summary-box">
+          <span>GPA</span>
+          <strong id="sumGpa">0.00</strong>
+        </div>
+        <div class="summary-box">
+          <span>চূড়ান্ত গ্রেড</span>
+          <strong id="sumGrade">-</strong>
+        </div>
+      </div>
+
+      <div class="sheet-actions">
+        <button type="button" id="printBtn" class="btn btn-print">মার্কশিট প্রিন্ট / PDF সেভ করুন</button>
+      </div>
+    </article>
+
+    <footer class="footer-note">
+      কাদুটি উচ্চ বিদ্যালয়, চান্দিনা, কুমিল্লা • ফলাফল যাচাই পোর্টাল
+    </footer>
+  </div>
+
+  <script>
+    // নমুনা ডেটা (পরবর্তীতে Google Sheets থেকে ডাইনামিক ডেটা লোড করা হবে)
+    const SAMPLE_RESULTS = [
+      {
+        studentId: "KHS-6A-01",
+        className: "6",
+        section: "ক",
+        roll: "1",
+        name: "আরিফুল ইসলাম",
+        fatherName: "মোঃ রফিকুল ইসলাম",
+        subjects: [
+          { name: "বাংলা", marks: 84 },
+          { name: "ইংরেজি", marks: 78 },
+          { name: "গণিত", marks: 91 },
+          { name: "বিজ্ঞান", marks: 82 },
+          { name: "বাংলাদেশ ও বিশ্বপরিচয়", marks: 80 }
+        ]
+      },
+      {
+        studentId: "KHS-6B-01",
+        className: "6",
+        section: "খ",
+        roll: "1",
+        name: "তাসনিম আক্তার",
+        fatherName: "মোঃ কামাল হোসেন",
+        subjects: [
+          { name: "বাংলা", marks: 88 },
+          { name: "ইংরেজি", marks: 85 },
+          { name: "গণিত", marks: 86 },
+          { name: "বিজ্ঞান", marks: 79 },
+          { name: "বাংলাদেশ ও বিশ্বপরিচয়", marks: 81 }
+        ]
+      },
+      {
+        studentId: "KHS-6C-01",
+        className: "6",
+        section: "গ",
+        roll: "1",
+        name: "সাকিবুল হাসান",
+        fatherName: "মোঃ জাহাঙ্গীর আলম",
+        subjects: [
+          { name: "বাংলা", marks: 72 },
+          { name: "ইংরেজি", marks: 68 },
+          { name: "গণিত", marks: 76 },
+          { name: "বিজ্ঞান", marks: 70 },
+          { name: "বাংলাদেশ ও বিশ্বপরিচয়", marks: 74 }
+        ]
+      }
+    ];
+
+    function normalizeRoll(val) {
+      return String(val || "").trim().replace(/^0+/, "") || "0";
+    }
+
+    function getGradeInfo(marks) {
+      const m = Number(marks) || 0;
+      if (m >= 80) return { gp: 5.0, grade: "A+" };
+      if (m >= 70) return { gp: 4.0, grade: "A" };
+      if (m >= 60) return { gp: 3.5, grade: "A-" };
+      if (m >= 50) return { gp: 3.0, grade: "B" };
+      if (m >= 40) return { gp: 2.0, grade: "C" };
+      if (m >= 33) return { gp: 1.0, grade: "D" };
+      return { gp: 0.0, grade: "F" };
+    }
+
+    function getOverallGrade(gpa) {
+      if (gpa >= 5.0) return "A+";
+      if (gpa >= 4.0) return "A";
+      if (gpa >= 3.5) return "A-";
+      if (gpa >= 3.0) return "B";
+      if (gpa >= 2.0) return "C";
+      if (gpa >= 1.0) return "D";
+      return "F";
+    }
+
+    const resultForm = document.getElementById("resultForm");
+    const classSelect = document.getElementById("classSelect");
+    const sectionSelect = document.getElementById("sectionSelect");
+    const rollInput = document.getElementById("rollInput");
+    const statusBox = document.getElementById("statusBox");
+    const marksheetCard = document.getElementById("marksheetCard");
+    const resetBtn = document.getElementById("resetBtn");
+    const printBtn = document.getElementById("printBtn");
+
+    function showError(msg) {
+      statusBox.textContent = msg;
+      statusBox.className = "status-msg status-error";
+      marksheetCard.classList.remove("active");
+    }
+
+    function clearError() {
+      statusBox.textContent = "";
+      statusBox.className = "status-msg";
+    }
+
+    function renderMarksheet(student) {
+      clearError();
+
+      document.getElementById("stName").textContent = student.name;
+      document.getElementById("stId").textContent = student.studentId;
+      document.getElementById("stClass").textContent = `${student.className}ষ্ঠ শ্রেণি`;
+      document.getElementById("stSection").textContent = `${student.section} শাখা`;
+      document.getElementById("stRoll").textContent = student.roll;
+      document.getElementById("stFather").textContent = student.fatherName || "-";
+
+      const tbody = document.getElementById("marksBody");
+      tbody.innerHTML = "";
+
+      let totalMarks = 0;
+      let totalGp = 0;
+      let hasFailed = false;
+
+      student.subjects.forEach((sub, idx) => {
+        const marks = Number(sub.marks) || 0;
+        const info = getGradeInfo(marks);
+        if (marks < 33 || info.grade === "F") {
+          hasFailed = true;
+        }
+        totalMarks += marks;
+        totalGp += info.gp;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${sub.name}</td>
+          <td>${marks}</td>
+          <td>${info.gp.toFixed(2)}</td>
+          <td><strong>${info.grade}</strong></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const count = student.subjects.length || 1;
+      const avg = totalMarks / count;
+      const gpa = hasFailed ? 0.0 : totalGp / count;
+      const finalGrade = hasFailed ? "F" : getOverallGrade(gpa);
+
+      document.getElementById("sumTotal").textContent = totalMarks;
+      document.getElementById("sumAvg").textContent = avg.toFixed(2);
+      document.getElementById("sumGpa").textContent = gpa.toFixed(2);
+      document.getElementById("sumGrade").textContent = finalGrade;
+
+      const badge = document.getElementById("statusBadge");
+      if (hasFailed) {
+        badge.textContent = "অনুত্তীর্ণ (FAILED)";
+        badge.className = "status-pill fail-pill";
+      } else {
+        badge.textContent = "উত্তীর্ণ (PASSED)";
+        badge.className = "status-pill pass-pill";
+      }
+
+      marksheetCard.classList.add("active");
+      marksheetCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    resultForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const cls = classSelect.value;
+      const sec = sectionSelect.value;
+      const rollNorm = normalizeRoll(rollInput.value);
+
+      if (!sec) {
+        showError("অনুগ্রহ করে একটি শাখা (ক, খ বা গ) নির্বাচন করুন।");
+        return;
+      }
+
+      const found = SAMPLE_RESULTS.find(
+        (item) =>
+          String(item.className) === String(cls) &&
+          item.section === sec &&
+          normalizeRoll(item.roll) === rollNorm
+      );
+
+      if (!found) {
+        showError(`৬ষ্ঠ শ্রেণির "${sec}" শাখায় রোল "${rollInput.value.trim()}"-এর কোনো ফলাফল পাওয়া যায়নি।`);
+        return;
+      }
+
+      renderMarksheet(found);
+    });
+
+    resetBtn.addEventListener("click", function () {
+      sectionSelect.value = "";
+      rollInput.value = "";
+      clearError();
+      marksheetCard.classList.remove("active");
+    });
+
+    printBtn.addEventListener("click", function () {
+      window.print();
+    });
+  </script>
+</body>
+</html>
