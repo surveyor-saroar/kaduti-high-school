@@ -117,29 +117,19 @@
   </div>
 
   <script>
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-mHQ364DffZpB4vjuoiU0IVb9JTyPiHR2QKBjmwrP4OEdSe0JY3NKAltXEjWP5KvtqneF5ZiEIO-j/pub?output=csv";
-
-    const BACKUP = [
-      { Student_ID: "06A01", Class: "6", Section: "ক", Roll: "1", Student_Name: "শিক্ষার্থী ক-১", Bangla: "82", English: "78", Math: "90", Science: "85", BGS: "76", Religion: "88", Total: "499", Average: "83.17", GPA: "5", Grade: "A+" },
-      { Student_ID: "06B01", Class: "6", Section: "খ", Roll: "1", Student_Name: "শিক্ষার্থী খ-১", Bangla: "75", English: "80", Math: "84", Science: "79", BGS: "77", Religion: "81", Total: "476", Average: "79.33", GPA: "4", Grade: "A" },
-      { Student_ID: "06C01", Class: "6", Section: "গ", Roll: "1", Student_Name: "শিক্ষার্থী গ-১", Bangla: "70", English: "72", Math: "76", Science: "70", BGS: "68", Religion: "75", Total: "431", Average: "71.83", GPA: "4", Grade: "A" }
-    ];
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-mHQ364DffZpB4vjuoiU0IVb9JTyPiHR2QKBjmwrP4OEdSe0JY3NKAltXEjWP5KvtqneF5ZiEIO-j/pub?output=csv"; //[cite: 6]
 
     function cleanNum(v) {
       const bn = "০১২৩৪৫৬৭৮৯";
       return String(v || "").trim().replace(/[০-৯]/g, d => bn.indexOf(d)).replace(/^0+/, "") || "0";
     }
 
-    function parseCsv(txt) {
-      const lines = txt.trim().split(/\r?\n/).filter(Boolean);
+    function parseCsvRows(txt) {
+      const lines = txt.replace(/^\uFEFF/, "").trim().split(/\r?\n/).filter(Boolean);
       if (lines.length < 2) return [];
-      const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
-      return lines.slice(1).map(line => {
-        const vals = line.split(",").map(c => c.replace(/^"|"$/g, "").trim());
-        const obj = {};
-        headers.forEach((h, i) => obj[h] = vals[i] ?? "");
-        return obj;
-      });
+      return lines.slice(1).map(line =>
+        line.split(",").map(c => c.replace(/^"|"$/g, "").trim())
+      );
     }
 
     document.getElementById("searchForm").addEventListener("submit", async function (e) {
@@ -156,52 +146,54 @@
       }
 
       msg.textContent = "খোঁজা হচ্ছে...";
-      let data = BACKUP;
 
       try {
-        const res = await fetch(CSV_URL + "&t=" + Date.now());
-        if (res.ok) {
-          const parsed = parseCsv(await res.text());
-          if (parsed.length) data = parsed;
+        const sep = CSV_URL.includes("?") ? "&" : "?";
+        const res = await fetch(CSV_URL + sep + "t=" + Date.now());
+        if (!res.ok) throw new Error("fetch failed");
+
+        const rows = parseCsvRows(await res.text());
+        // col[0]=Student_ID, col[1]=Class, col[2]=Section, col[3]=Roll, col[4]=Student_Name
+        const student = rows.find(col =>
+          cleanNum(col[1]) === "6" &&
+          String(col[2] || "").trim() === sec &&
+          cleanNum(col[3]) === roll
+        );
+
+        if (!student) {
+          msg.textContent = "এই শাখা ও রোলের কোনো ফলাফল পাওয়া যায়নি।";
+          sheet.style.display = "none";
+          return;
         }
-      } catch (err) {}
 
-      const student = data.find(r =>
-        cleanNum(r.Class) === "6" &&
-        String(r.Section || "").trim() === sec &&
-        cleanNum(r.Roll) === roll
-      );
+        msg.textContent = "";
+        document.getElementById("mId").textContent = student[0] || "-";
+        document.getElementById("mSec").textContent = student[2] || "-";
+        document.getElementById("mRoll").textContent = student[3] || "-";
+        document.getElementById("mName").textContent = student[4] || "-";
 
-      if (!student) {
-        msg.textContent = "এই শাখা ও রোলের কোনো ফলাফল পাওয়া যায়নি।";
+        const subjects = [
+          ["বাংলা", student[5]],
+          ["ইংরেজি", student[6]],
+          ["গণিত", student[7]],
+          ["বিজ্ঞান", student[8]],
+          ["বাংলাদেশ ও বিশ্বপরিচয়", student[9]],
+          ["ধর্ম ও নৈতিক শিক্ষা", student[10]]
+        ];
+
+        document.getElementById("mRows").innerHTML = subjects
+          .map(([sub, mark]) => `<tr><td>${sub}</td><td>${mark || "-"}</td></tr>`)
+          .join("");
+
+        document.getElementById("mTotal").textContent = student[11] || "-";
+        document.getElementById("mAvg").textContent = student[12] || "-";
+        document.getElementById("mGpa").textContent = student[13] || "-";
+        document.getElementById("mGrade").textContent = student[14] || "-";
+        sheet.style.display = "block";
+      } catch (err) {
+        msg.textContent = "শিট থেকে ডেটা আনা যাচ্ছে না। একটু পর আবার চেষ্টা করুন।";
         sheet.style.display = "none";
-        return;
       }
-
-      msg.textContent = "";
-      document.getElementById("mName").textContent = student.Student_Name;
-      document.getElementById("mId").textContent = student.Student_ID;
-      document.getElementById("mSec").textContent = student.Section;
-      document.getElementById("mRoll").textContent = student.Roll;
-
-      const subjects = [
-        ["বাংলা", student.Bangla],
-        ["ইংরেজি", student.English],
-        ["গণিত", student.Math],
-        ["বিজ্ঞান", student.Science],
-        ["বাংলাদেশ ও বিশ্বপরিচয়", student.BGS],
-        ["ধর্ম ও নৈতিক শিক্ষা", student.Religion]
-      ];
-
-      document.getElementById("mRows").innerHTML = subjects
-        .map(([sub, mark]) => `<tr><td>${sub}</td><td>${mark}</td></tr>`)
-        .join("");
-
-      document.getElementById("mTotal").textContent = student.Total;
-      document.getElementById("mAvg").textContent = student.Average;
-      document.getElementById("mGpa").textContent = student.GPA;
-      document.getElementById("mGrade").textContent = student.Grade;
-      sheet.style.display = "block";
     });
   </script>
 </body>
