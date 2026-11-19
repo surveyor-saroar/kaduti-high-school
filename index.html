@@ -96,7 +96,9 @@
     .feedback-wrap {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .feedback-btn {
@@ -131,21 +133,30 @@
       box-shadow: 0 0 12px rgba(244, 63, 94, 0.45);
     }
 
+    /* সবসময় দৃশ্যমান ব্যাজ: ডিফল্ট সবুজ, নতুন মেসেজে লাল */
     .unread-badge {
-      display: none;
-      background: #ef4444;
+      display: inline-block;
+      background: #16a34a;
       color: #ffffff;
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 999px;
       cursor: pointer;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 0 10px rgba(22, 163, 74, 0.35);
+      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
     }
 
-    .unread-badge.show {
-      display: inline-block;
+    .unread-badge:hover {
+      transform: translateY(-1px);
+    }
+
+    .unread-badge.is-unread {
+      background: #ef4444;
+      border-color: #fecaca;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.55);
     }
 
     .search-card {
@@ -539,8 +550,8 @@
           >
             পরামর্শ দিন
           </a>
-          <button type="button" id="unreadBadge" class="unread-badge" title="নতুন পরামর্শ দেখতে ও পড়া হয়েছে চিহ্নিত করতে ক্লিক করুন">
-            ০টি নতুন
+          <button type="button" id="unreadBadge" class="unread-badge" title="নতুন পরামর্শ আসলে লাল হবে; পড়ে নিলে সবুজ করতে ক্লিক করুন">
+            ০টি নতুন মেসেজ
           </button>
         </div>
       </div>
@@ -668,169 +679,4 @@
     const rollInput = document.getElementById("rollInput");
     const statusBox = document.getElementById("statusBox");
     const marksheetCard = document.getElementById("marksheetCard");
-    const resetBtn = document.getElementById("resetBtn");
-    const printBtn = document.getElementById("printBtn");
-
-    function showStatus(msg, type = "error") {
-      statusBox.textContent = msg;
-      statusBox.className = `status-msg ${type === "info" ? "status-info" : "status-error"}`;
-      if (type === "error") marksheetCard.classList.remove("active");
-    }
-
-    function clearStatus() {
-      statusBox.textContent = "";
-      statusBox.className = "status-msg";
-    }
-
-    function renderMarksheet(row) {
-      if (usingFallback) {
-        showStatus("ব্যাকআপ ডেটা থেকে ফলাফল দেখানো হচ্ছে।", "info");
-      } else {
-        clearStatus();
-      }
-
-      document.getElementById("stName").textContent = row.Student_Name || "-";
-      document.getElementById("stId").textContent = row.Student_ID || "-";
-      document.getElementById("stClass").textContent = `${row.Class || "6"}ষ্ঠ শ্রেণি`;
-      document.getElementById("stSection").textContent = `${row.Section || "-"} শাখা`;
-      document.getElementById("stRoll").textContent = row.Roll || "-";
-
-      const tbody = document.getElementById("marksBody");
-      tbody.innerHTML = "";
-
-      let calcTotal = 0;
-      let calcGpSum = 0;
-      let subCount = 0;
-      let hasFailed = false;
-
-      SUBJECT_MAP.forEach((sub, idx) => {
-        const rawVal = row[sub.key];
-        if (rawVal === undefined || rawVal === "") return;
-        const marks = Number(rawVal) || 0;
-        const info = getGradeInfo(marks);
-        if (marks < 33 || info.grade === "F") hasFailed = true;
-
-        calcTotal += marks;
-        calcGpSum += info.gp;
-        subCount++;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${idx + 1}</td>
-          <td>${sub.label}</td>
-          <td>${marks}</td>
-          <td>${info.gp.toFixed(2)}</td>
-          <td><strong>${info.grade}</strong></td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      const totalVal = row.Total !== "" && row.Total !== undefined ? Number(row.Total) : calcTotal;
-      const avgVal = row.Average !== "" && row.Average !== undefined
-        ? Number(row.Average)
-        : (subCount ? calcTotal / subCount : 0);
-      const gpaVal = hasFailed
-        ? 0
-        : (row.GPA !== "" && row.GPA !== undefined ? Number(row.GPA) : (subCount ? calcGpSum / subCount : 0));
-      const gradeVal = row.Grade && String(row.Grade).trim() !== ""
-        ? String(row.Grade).trim()
-        : (hasFailed ? "F" : getOverallGrade(gpaVal));
-
-      document.getElementById("sumTotal").textContent = totalVal;
-      document.getElementById("sumAvg").textContent = Number(avgVal).toFixed(2);
-      document.getElementById("sumGpa").textContent = Number(gpaVal).toFixed(2);
-      document.getElementById("sumGrade").textContent = gradeVal;
-
-      const badge = document.getElementById("statusBadge");
-      const statusText = String(row.Status || "").trim().toLowerCase();
-      if (hasFailed || gradeVal === "F" || Number(gpaVal) === 0 || statusText === "fail") {
-        badge.textContent = "অনুত্তীর্ণ (FAILED)";
-        badge.className = "status-pill fail-pill";
-      } else {
-        badge.textContent = "উত্তীর্ণ (PASSED)";
-        badge.className = "status-pill pass-pill";
-      }
-
-      marksheetCard.classList.add("active");
-      marksheetCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-
-    resultForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const cls = classSelect.value;
-      const sec = sectionSelect.value;
-      const rollNorm = normalizeRoll(rollInput.value);
-
-      if (!sec) {
-        showStatus("অনুগ্রহ করে একটি শাখা (ক, খ বা গ) নির্বাচন করুন।", "error");
-        return;
-      }
-
-      showStatus("ফলাফল খোঁজা হচ্ছে...", "info");
-
-      const rows = await getStudentRows();
-      const found = rows.find((r) => {
-        const isPublished = !r.Published || String(r.Published).trim().toLowerCase() === "yes";
-        return (
-          isPublished &&
-          normalizeRoll(r.Class) === normalizeRoll(cls) &&
-          String(r.Section || "").trim() === sec &&
-          normalizeRoll(r.Roll) === rollNorm
-        );
-      });
-
-      if (!found) {
-        showStatus(`৬ষ্ঠ শ্রেণির "${sec}" শাখায় রোল "${rollInput.value.trim()}"-এর কোনো ফলাফল পাওয়া যায়নি।`, "error");
-        return;
-      }
-
-      renderMarksheet(found);
-    });
-
-    resetBtn.addEventListener("click", function () {
-      sectionSelect.value = "";
-      rollInput.value = "";
-      clearStatus();
-      marksheetCard.classList.remove("active");
-    });
-
-    printBtn.addEventListener("click", function () {
-      window.print();
-    });
-
-    async function checkFeedbackMessages() {
-      if (!FEEDBACK_CSV_URL || FEEDBACK_CSV_URL.includes("YOUR_FEEDBACK_SHEET_CSV_URL")) return;
-      try {
-        const cacheBuster = FEEDBACK_CSV_URL.includes("?") ? "&_t=" + Date.now() : "?_t=" + Date.now();
-        const res = await fetch(FEEDBACK_CSV_URL + cacheBuster);
-        if (!res.ok) return;
-        const text = await res.text();
-        const lines = text.trim().split(/\r?\n/).filter(Boolean);
-        const totalMessages = Math.max(0, lines.length - 1);
-        const readCount = Number(localStorage.getItem(STORAGE_KEY) || 0);
-        const unread = Math.max(0, totalMessages - readCount);
-
-        const btn = document.getElementById("feedbackBtn");
-        const badge = document.getElementById("unreadBadge");
-
-        if (unread > 0) {
-          btn.classList.add("has-unread");
-          badge.textContent = `${unread}টি নতুন মেসেজ`;
-          badge.classList.add("show");
-          badge.onclick = () => {
-            localStorage.setItem(STORAGE_KEY, String(totalMessages));
-            btn.classList.remove("has-unread");
-            badge.classList.remove("show");
-          };
-        } else {
-          btn.classList.remove("has-unread");
-          badge.classList.remove("show");
-        }
-      } catch (e) {}
-    }
-
-    checkFeedbackMessages();
-    setInterval(checkFeedbackMessages, 30000);
-  </script>
-</body>
-</html>
+    const resetBtn = document.getElementById("reset
