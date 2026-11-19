@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>কাদুটি উচ্চ বিদ্যালয় — ৬ষ্ঠ শ্রেণির ফলাফল পোর্টাল</title>
+  <title>কাদুটি উচ্চ বিদ্যালয় — রোল অনুযায়ী ফলাফল পোর্টাল</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark: #090d16;
-      --card-bg: rgba(18, 25, 42, 0.85);
+      --card-bg: rgba(18, 25, 42, 0.88);
       --surface-light: #ffffff;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --accent: #38bdf8;
       --accent-2: #22c55e;
       --danger: #ef4444;
-      --border: rgba(148, 163, 184, 0.2);
+      --border: rgba(148, 163, 184, 0.22);
     }
 
     * {
@@ -73,6 +73,15 @@
     .subtitle {
       color: var(--text-muted);
       font-size: 0.98rem;
+      margin-bottom: 12px;
+    }
+
+    .quick-link {
+      display: inline-block;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: underline;
+      font-size: 0.96rem;
     }
 
     .search-card {
@@ -106,7 +115,7 @@
       padding: 11px 14px;
       border-radius: 10px;
       border: 1px solid rgba(148, 163, 184, 0.3);
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.92);
       color: #ffffff;
       font-family: inherit;
       font-size: 1rem;
@@ -136,7 +145,7 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+      transition: transform 0.15s ease, opacity 0.2s ease;
     }
 
     .btn:active {
@@ -179,7 +188,13 @@
       color: #fecaca;
     }
 
-    /* Printable Marksheet */
+    .status-info {
+      display: block;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #bae6fd;
+    }
+
     .marksheet-wrapper {
       display: none;
       background: var(--surface-light);
@@ -216,10 +231,6 @@
       font-size: 0.95rem;
     }
 
-    .sheet-tag {
-      text-align: right;
-    }
-
     .status-pill {
       display: inline-block;
       padding: 4px 12px;
@@ -250,10 +261,6 @@
       padding: 14px 16px;
       margin-bottom: 18px;
       font-size: 0.96rem;
-    }
-
-    .info-item strong {
-      color: #0f172a;
     }
 
     .table-wrap {
@@ -347,9 +354,10 @@
 <body>
   <div class="container">
     <header class="header-card">
-      <div class="badge">অনলাইন ফলাফল পোর্টাল</div>
+      <div class="badge">রোল অনুযায়ী ফলাফল পোর্টাল</div>
       <h1>কাদুটি উচ্চ বিদ্যালয়</h1>
       <p class="subtitle">কাদুটি, চান্দিনা, কুমিল্লা • ৬ষ্ঠ শ্রেণির পরীক্ষার ফলাফল (ক, খ ও গ শাখা)</p>
+      <a href="#resultForm" class="quick-link">রোল নম্বর দিয়ে ফলাফল দেখুন</a>
     </header>
 
     <section class="search-card">
@@ -380,10 +388,10 @@
 
         <div class="btn-row">
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button type="submit" class="btn btn-primary">ফলাফল দেখুন</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary">ফলাফল দেখুন</button>
             <button type="button" id="resetBtn" class="btn btn-secondary">রিসেট</button>
           </div>
-          <p class="hint-text">নমুনা দেখতে শাখা **ক / খ / গ** এবং রোল **1** লিখে অনুসন্ধান করুন।</p>
+          <p class="hint-text">অভিভাবকগণ শাখা ও রোল নম্বর দিয়ে নিজ নিজ সন্তানের মার্কশিট দেখতে ও প্রিন্ট করতে পারবেন।</p>
         </div>
       </form>
 
@@ -407,7 +415,6 @@
         <div class="info-item"><strong>শ্রেণি:</strong> <span id="stClass">-</span></div>
         <div class="info-item"><strong>শাখা:</strong> <span id="stSection">-</span></div>
         <div class="info-item"><strong>রোল নম্বর:</strong> <span id="stRoll">-</span></div>
-        <div class="info-item"><strong>পিতার নাম:</strong> <span id="stFather">-</span></div>
       </div>
 
       <div class="table-wrap">
@@ -450,62 +457,88 @@
     </article>
 
     <footer class="footer-note">
-      কাদুটি উচ্চ বিদ্যালয়, চান্দিনা, কুমিল্লা • ফলাফল যাচাই পোর্টাল
+      কাদুটি উচ্চ বিদ্যালয়, চান্দিনা, কুমিল্লা • অভিভাবক ও শিক্ষার্থী ফলাফল যাচাই পোর্টাল
     </footer>
   </div>
 
   <script>
-    // নমুনা ডেটা (পরবর্তীতে Google Sheets থেকে ডাইনামিক ডেটা লোড করা হবে)
-    const SAMPLE_RESULTS = [
-      {
-        studentId: "KHS-6A-01",
-        className: "6",
-        section: "ক",
-        roll: "1",
-        name: "আরিফুল ইসলাম",
-        fatherName: "মোঃ রফিকুল ইসলাম",
-        subjects: [
-          { name: "বাংলা", marks: 84 },
-          { name: "ইংরেজি", marks: 78 },
-          { name: "গণিত", marks: 91 },
-          { name: "বিজ্ঞান", marks: 82 },
-          { name: "বাংলাদেশ ও বিশ্বপরিচয়", marks: 80 }
-        ]
-      },
-      {
-        studentId: "KHS-6B-01",
-        className: "6",
-        section: "খ",
-        roll: "1",
-        name: "তাসনিম আক্তার",
-        fatherName: "মোঃ কামাল হোসেন",
-        subjects: [
-          { name: "বাংলা", marks: 88 },
-          { name: "ইংরেজি", marks: 85 },
-          { name: "গণিত", marks: 86 },
-          { name: "বিজ্ঞান", marks: 79 },
-          { name: "বাংলাদেশ ও বিশ্বপরিচয়", marks: 81 }
-        ]
-      },
-      {
-        studentId: "KHS-6C-01",
-        className: "6",
-        section: "গ",
-        roll: "1",
-        name: "সাকিবুল হাসান",
-        fatherName: "মোঃ জাহাঙ্গীর আলম",
-        subjects: [
-          { name: "বাংলা", marks: 72 },
-          { name: "ইংরেজি", marks: 68 },
-          { name: "গণিত", marks: 76 },
-          { name: "বিজ্ঞান", marks: 70 },
-          { name: "বাংলাদেশ ও বিশ্বপরিচয়", marks: 74 }
-        ]
-      }
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-mHQ364DffZpB4vjuoiU0IVb9JTyPiHR2QKBjmwrP4OEdSe0JY3NKAltXEjWP5KvtqneF5ZiEIO-j/pub?output=csv"; //[cite: 6]
+
+    const FALLBACK_ROWS = [
+      { Student_ID: "06A01", Class: "6", Section: "ক", Roll: "1", Student_Name: "শিক্ষার্থী ক-১", Bangla: "82", English: "78", Math: "90", Science: "85", BGS: "76", Religion: "88", Total: "499", Average: "83.17", GPA: "5", Grade: "A+" }, //[cite: 4]
+      { Student_ID: "06A02", Class: "6", Section: "ক", Roll: "2", Student_Name: "শিক্ষার্থী ক-২", Bangla: "65", English: "70", Math: "72", Science: "68", BGS: "74", Religion: "80", Total: "429", Average: "71.5", GPA: "4", Grade: "A" }, //[cite: 4]
+      { Student_ID: "06B01", Class: "6", Section: "খ", Roll: "1", Student_Name: "শিক্ষার্থী খ-১", Bangla: "75", English: "80", Math: "84", Science: "79", BGS: "77", Religion: "81", Total: "476", Average: "79.33", GPA: "4", Grade: "A" }, //[cite: 4]
+      { Student_ID: "06B02", Class: "6", Section: "খ", Roll: "2", Student_Name: "শিক্ষার্থী খ-২", Bangla: "28", English: "66", Math: "70", Science: "65", BGS: "60", Religion: "72", Total: "361", Average: "60.17", GPA: "0", Grade: "F" }, //[cite: 4]
+      { Student_ID: "06C01", Class: "6", Section: "গ", Roll: "1", Student_Name: "শিক্ষার্থী গ-১", Bangla: "70", English: "72", Math: "76", Science: "70", BGS: "68", Religion: "75", Total: "431", Average: "71.83", GPA: "4", Grade: "A" } //[cite: 4]
     ];
 
+    const SUBJECT_MAP = [
+      { key: "Bangla", label: "বাংলা" }, //[cite: 4]
+      { key: "English", label: "ইংরেজি" }, //[cite: 4]
+      { key: "Math", label: "গণিত" }, //[cite: 4]
+      { key: "Science", label: "বিজ্ঞান" }, //[cite: 4]
+      { key: "BGS", label: "বাংলাদেশ ও বিশ্বপরিচয়" }, //[cite: 4]
+      { key: "Religion", label: "ধর্ম ও নৈতিক শিক্ষা" } //[cite: 4]
+    ];
+
+    let cachedStudents = null;
+
     function normalizeRoll(val) {
-      return String(val || "").trim().replace(/^0+/, "") || "0";
+      const banglaDigits = "০১২৩৪৫৬৭৮৯";
+      const converted = String(val || "")
+        .trim()
+        .replace(/[০-৯]/g, (d) => String(banglaDigits.indexOf(d)));
+      return converted.replace(/^0+/, "") || "0";
+    }
+
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/).filter(Boolean);
+      if (lines.length < 2) return [];
+
+      const splitLine = (line) => {
+        const result = [];
+        let cur = "";
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+              cur += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (ch === "," && !inQuotes) {
+            result.push(cur.trim());
+            cur = "";
+          } else {
+            cur += ch;
+          }
+        }
+        result.push(cur.trim());
+        return result;
+      };
+
+      const headers = splitLine(lines[0]);
+      return lines.slice(1).map((line) => {
+        const cols = splitLine(line);
+        const obj = {};
+        headers.forEach((h, idx) => {
+          obj[h] = cols[idx] !== undefined ? cols[idx] : "";
+        });
+        return obj;
+      });
+    }
+
+    async function getStudentRows() {
+      if (cachedStudents) return cachedStudents;
+      const cacheBuster = SHEET_CSV_URL.includes("?") ? "&_t=" + Date.now() : "?_t=" + Date.now();
+      const res = await fetch(SHEET_CSV_URL + cacheBuster);
+      if (!res.ok) throw new Error("শিট ডেটা লোড করা যায়নি");
+      const csvText = await res.text();
+      const rows = parseCSV(csvText);
+      cachedStudents = rows.length ? rows : FALLBACK_ROWS;
+      return cachedStudents;
     }
 
     function getGradeInfo(marks) {
@@ -538,47 +571,49 @@
     const resetBtn = document.getElementById("resetBtn");
     const printBtn = document.getElementById("printBtn");
 
-    function showError(msg) {
+    function showStatus(msg, type = "error") {
       statusBox.textContent = msg;
-      statusBox.className = "status-msg status-error";
-      marksheetCard.classList.remove("active");
+      statusBox.className = `status-msg ${type === "info" ? "status-info" : "status-error"}`;
+      if (type === "error") marksheetCard.classList.remove("active");
     }
 
-    function clearError() {
+    function clearStatus() {
       statusBox.textContent = "";
       statusBox.className = "status-msg";
     }
 
-    function renderMarksheet(student) {
-      clearError();
+    function renderMarksheet(row) {
+      clearStatus();
 
-      document.getElementById("stName").textContent = student.name;
-      document.getElementById("stId").textContent = student.studentId;
-      document.getElementById("stClass").textContent = `${student.className}ষ্ঠ শ্রেণি`;
-      document.getElementById("stSection").textContent = `${student.section} শাখা`;
-      document.getElementById("stRoll").textContent = student.roll;
-      document.getElementById("stFather").textContent = student.fatherName || "-";
+      document.getElementById("stName").textContent = row.Student_Name || "-"; //[cite: 4]
+      document.getElementById("stId").textContent = row.Student_ID || "-"; //[cite: 4]
+      document.getElementById("stClass").textContent = `${row.Class || "6"}ষ্ঠ শ্রেণি`; //[cite: 4]
+      document.getElementById("stSection").textContent = `${row.Section || "-"} শাখা`; //[cite: 4]
+      document.getElementById("stRoll").textContent = row.Roll || "-"; //[cite: 4]
 
       const tbody = document.getElementById("marksBody");
       tbody.innerHTML = "";
 
-      let totalMarks = 0;
-      let totalGp = 0;
+      let calcTotal = 0;
+      let calcGpSum = 0;
+      let subCount = 0;
       let hasFailed = false;
 
-      student.subjects.forEach((sub, idx) => {
-        const marks = Number(sub.marks) || 0;
+      SUBJECT_MAP.forEach((sub, idx) => {
+        const rawVal = row[sub.key];
+        if (rawVal === undefined || rawVal === "") return;
+        const marks = Number(rawVal) || 0;
         const info = getGradeInfo(marks);
-        if (marks < 33 || info.grade === "F") {
-          hasFailed = true;
-        }
-        totalMarks += marks;
-        totalGp += info.gp;
+        if (marks < 33 || info.grade === "F") hasFailed = true;
+
+        calcTotal += marks;
+        calcGpSum += info.gp;
+        subCount++;
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${idx + 1}</td>
-          <td>${sub.name}</td>
+          <td>${sub.label}</td>
           <td>${marks}</td>
           <td>${info.gp.toFixed(2)}</td>
           <td><strong>${info.grade}</strong></td>
@@ -586,18 +621,24 @@
         tbody.appendChild(tr);
       });
 
-      const count = student.subjects.length || 1;
-      const avg = totalMarks / count;
-      const gpa = hasFailed ? 0.0 : totalGp / count;
-      const finalGrade = hasFailed ? "F" : getOverallGrade(gpa);
+      const totalVal = row.Total !== "" && row.Total !== undefined ? Number(row.Total) : calcTotal; //[cite: 4]
+      const avgVal = row.Average !== "" && row.Average !== undefined
+        ? Number(row.Average)
+        : (subCount ? calcTotal / subCount : 0); //[cite: 4]
+      const gpaVal = hasFailed
+        ? 0
+        : (row.GPA !== "" && row.GPA !== undefined ? Number(row.GPA) : (subCount ? calcGpSum / subCount : 0)); //[cite: 4]
+      const gradeVal = row.Grade && String(row.Grade).trim() !== ""
+        ? String(row.Grade).trim()
+        : (hasFailed ? "F" : getOverallGrade(gpaVal)); //[cite: 4]
 
-      document.getElementById("sumTotal").textContent = totalMarks;
-      document.getElementById("sumAvg").textContent = avg.toFixed(2);
-      document.getElementById("sumGpa").textContent = gpa.toFixed(2);
-      document.getElementById("sumGrade").textContent = finalGrade;
+      document.getElementById("sumTotal").textContent = totalVal;
+      document.getElementById("sumAvg").textContent = Number(avgVal).toFixed(2);
+      document.getElementById("sumGpa").textContent = Number(gpaVal).toFixed(2);
+      document.getElementById("sumGrade").textContent = gradeVal;
 
       const badge = document.getElementById("statusBadge");
-      if (hasFailed) {
+      if (hasFailed || gradeVal === "F" || Number(gpaVal) === 0) {
         badge.textContent = "অনুত্তীর্ণ (FAILED)";
         badge.className = "status-pill fail-pill";
       } else {
@@ -609,36 +650,43 @@
       marksheetCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
-    resultForm.addEventListener("submit", function (e) {
+    resultForm.addEventListener("submit", async function (e) {
       e.preventDefault();
       const cls = classSelect.value;
       const sec = sectionSelect.value;
       const rollNorm = normalizeRoll(rollInput.value);
 
       if (!sec) {
-        showError("অনুগ্রহ করে একটি শাখা (ক, খ বা গ) নির্বাচন করুন।");
+        showStatus("অনুগ্রহ করে একটি শাখা (ক, খ বা গ) নির্বাচন করুন।", "error");
         return;
       }
 
-      const found = SAMPLE_RESULTS.find(
-        (item) =>
-          String(item.className) === String(cls) &&
-          item.section === sec &&
-          normalizeRoll(item.roll) === rollNorm
-      );
+      showStatus("ফলাফল খোঁজা হচ্ছে...", "info");
 
-      if (!found) {
-        showError(`৬ষ্ঠ শ্রেণির "${sec}" শাখায় রোল "${rollInput.value.trim()}"-এর কোনো ফলাফল পাওয়া যায়নি।`);
-        return;
+      try {
+        const rows = await getStudentRows();
+        const found = rows.find(
+          (r) =>
+            normalizeRoll(r.Class) === normalizeRoll(cls) &&
+            String(r.Section || "").trim() === sec &&
+            normalizeRoll(r.Roll) === rollNorm
+        );
+
+        if (!found) {
+          showStatus(`৬ষ্ঠ শ্রেণির "${sec}" শাখায় রোল "${rollInput.value.trim()}"-এর কোনো ফলাফল পাওয়া যায়নি।`, "error");
+          return;
+        }
+
+        renderMarksheet(found);
+      } catch (err) {
+        showStatus("Google Sheet থেকে ডেটা আনা যাচ্ছে না। শিটটি Publish to web করা আছে কি না যাচাই করুন।", "error");
       }
-
-      renderMarksheet(found);
     });
 
     resetBtn.addEventListener("click", function () {
       sectionSelect.value = "";
       rollInput.value = "";
-      clearError();
+      clearStatus();
       marksheetCard.classList.remove("active");
     });
 
