@@ -73,7 +73,14 @@
     .subtitle {
       color: var(--text-muted);
       font-size: 0.98rem;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .quick-link {
@@ -82,6 +89,25 @@
       font-weight: 600;
       text-decoration: underline;
       font-size: 0.96rem;
+      padding: 7px 14px;
+    }
+
+    .feedback-btn {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.16);
+      color: #e0f2fe;
+      border: 1px solid rgba(56, 189, 248, 0.42);
+      border-radius: 10px;
+      padding: 7px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .feedback-btn:hover {
+      background: rgba(56, 189, 248, 0.26);
+      transform: translateY(-1px);
     }
 
     .search-card {
@@ -330,6 +356,10 @@
       margin-top: 28px;
     }
 
+    .footer-action {
+      margin-top: 10px;
+    }
+
     @media print {
       body {
         background: #ffffff !important;
@@ -357,7 +387,10 @@
       <div class="badge">রোল অনুযায়ী ফলাফল পোর্টাল</div>
       <h1>কাদুটি উচ্চ বিদ্যালয়</h1>
       <p class="subtitle">কাদুটি, ডাকঘর: কাদুটী বাজার-৩৫১০, চান্দিনা, কুমিল্লা • ৬ষ্ঠ শ্রেণির পরীক্ষার ফলাফল (ক, খ ও গ শাখা)</p>
-      <a href="#resultForm" class="quick-link">রোল নম্বর দিয়ে ফলাফল দেখুন</a>
+      <div class="header-actions">
+        <a href="#resultForm" class="quick-link">রোল নম্বর দিয়ে ফলাফল দেখুন</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSe2zQye7yuqqro9mjiAOKWFv_27iGom8y6JmZnaBR4ws9Pxrg/viewform?usp=header" target="_blank" rel="noopener noreferrer" class="feedback-btn">পরামর্শ দিন</a>
+      </div>
     </header>
 
     <section class="search-card">
@@ -457,7 +490,10 @@
     </article>
 
     <footer class="footer-note">
-      কাদুটি উচ্চ বিদ্যালয় • কাদুটি, ডাকঘর: কাদুটী বাজার-৩৫১০, চান্দিনা, কুমিল্লা • অভিভাবক ও শিক্ষার্থী ফলাফল যাচাই পোর্টাল
+      <div>কাদুটি উচ্চ বিদ্যালয় • কাদুটি, ডাকঘর: কাদুটী বাজার-৩৫১০, চান্দিনা, কুমিল্লা • অভিভাবক ও শিক্ষার্থী ফলাফল যাচাই পোর্টাল</div>
+      <div class="footer-action">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSe2zQye7yuqqro9mjiAOKWFv_27iGom8y6JmZnaBR4ws9Pxrg/viewform?usp=header" target="_blank" rel="noopener noreferrer" class="feedback-btn">পরামর্শ দিন</a>
+      </div>
     </footer>
   </div>
 
